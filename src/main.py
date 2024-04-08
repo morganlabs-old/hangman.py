@@ -9,29 +9,35 @@ class Game:
     lives_used = 0
 
     def __init__(self):
-        self.word = list("somethsings")
+        self.word = list("laptop")
         self.correct_guesses = [""] * len(self.word)
 
     def start(self):
-        print("Welcome to Hangman!")
-        print("The idea is simple. I'll think of a word, and you can guess letters or words to figure it out!")
-        print("Be careful, however! For each wrong answer, this little stickman will come closer and closer to death! :(")
-
         self.game_loop()
 
     def game_loop(self):
-        print()
+        print("Welcome to Hangman!")
+        print("The idea is simple. I'll think of a word, and you can guess letters or words to figure it out!")
+        print("Be careful, however! For each wrong answer, this little stickman will come closer and closer to death! :(")
         self.print_ui()
         self.get_guess()
 
         is_game_over = self.is_game_over()
-        if not is_game_over:
-            self.game_loop()
-        else:
+
+        if is_game_over:
             self.print_ui()
             self.game_over()
+            return
+
+        is_word_guessed = self.is_word_guessed()
+        if is_word_guessed:
+            self.game_complete()
+            return
+
+        self.game_loop()
 
     def print_ui(self):
+        self.clear_screen()
         self.print_correct_guesses()
         print(f"{self.lives_used}/{MAX_LIVES}")
         self.print_incorrect_guesses()
@@ -88,8 +94,19 @@ class Game:
     def is_game_over(self):
         return self.lives_used >= MAX_LIVES
 
+    def is_word_guessed(self):
+        return "".join(self.correct_guesses) == "".join(self.word)
+
     def game_over(self):
         print("Game over.")
+
+    def game_complete(self):
+        word = "".join(self.word)
+        print("Congratulations! You guessed the word.")
+        print(f"The word was {word}")
+
+    def clear_screen(self):
+        print("\033[H\033[J", end="")
 
 
 def main():

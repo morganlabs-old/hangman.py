@@ -1,5 +1,10 @@
 #!/bin/env python
+import json
+import os
+import random
+
 MAX_LIVES = 8
+DIFFICULTIES = ["easy", "normal", "hard"]
 
 
 class Game:
@@ -7,12 +12,14 @@ class Game:
     correct_guesses = []
     letters_guessed = []
     lives_used = 0
-
-    def __init__(self):
-        self.word = list("laptop")
-        self.correct_guesses = [""] * len(self.word)
+    difficulty = ""
 
     def start(self):
+        self.get_difficulty()
+
+        self.get_word()
+        self.correct_guesses = [""] * len(self.word["word"])
+
         self.game_loop()
 
     def game_loop(self):
@@ -34,6 +41,26 @@ class Game:
             return
 
         self.game_loop()
+
+    def get_difficulty(self):
+        difficulties = ", ".join(DIFFICULTIES)
+        print(f"Available difficulties: {difficulties}")
+        difficulty = input("What difficulty would you like to use? ")
+        difficulty = difficulty.lower()
+
+        if difficulty not in DIFFICULTIES:
+            print("That difficulty does not exist!")
+            self.get_difficulty()
+            return
+
+        self.difficulty = difficulty
+
+    def get_word(self):
+        with open(os.path.dirname(os.path.abspath(__file__))
+                  + "/words.json") as words_raw:
+            words = json.load(words_raw)
+
+        self.word = random.sample(words[self.difficulty], 1)[0]
 
     def print_ui(self):
         self.clear_screen()
@@ -120,19 +147,19 @@ class Game:
             return
         self.letters_guessed.append(guess.lower())
 
-        for i in range(len(self.word)):
-            if (self.word[i] == guess):
+        for i in range(len(self.word["word"])):
+            if (self.word["word"][i] == guess):
                 self.correct_guesses[i] = guess
 
         if guess not in self.correct_guesses:
             self.use_life()
 
     def handle_word_guess(self, guess):
-        word_str = "".join(self.word).lower()
+        word_str = "".join(self.word["word"]).lower()
         guess = guess.lower()
 
         if word_str == guess:
-            self.correct_guesses = self.word
+            self.correct_guesses = self.word["word"]
         else:
             self.use_life()
             self.use_life()
@@ -144,15 +171,15 @@ class Game:
         return self.lives_used >= MAX_LIVES
 
     def is_word_guessed(self):
-        return "".join(self.correct_guesses) == "".join(self.word)
+        return "".join(self.correct_guesses) == "".join(self.word["word"])
 
     def game_over(self):
-        word = "".join(self.word)
+        word = "".join(self.word["word"])
         print("Too bad! Better luck next time.")
         print(f"The word was {word}")
 
     def game_complete(self):
-        word = "".join(self.word)
+        word = "".join(self.word["word"])
         print("Congratulations! You guessed the word.")
         print(f"The word was {word}")
 

@@ -1,5 +1,5 @@
 #!/bin/env python
-MAX_LIVES = 10
+MAX_LIVES = 8
 
 
 class Game:
@@ -39,7 +39,7 @@ class Game:
     def print_ui(self):
         self.clear_screen()
         self.print_correct_guesses()
-        print(f"{self.lives_used}/{MAX_LIVES}")
+        self.print_hangman()
         self.print_incorrect_guesses()
 
     def print_correct_guesses(self):
@@ -58,6 +58,49 @@ class Game:
         incorrect_guesses_str = " ".join(incorrect_guesses_str)
 
         print(incorrect_guesses_str)
+
+    def print_hangman(self):
+        hangman = [""] * 8
+
+        # See, I know there's like a 99.99999% chance there's an easier way to
+        # do this... but idk it so :shrug:
+        if self.lives_used >= 0:
+            hangman[0] = ""
+            hangman[1] = ""
+            hangman[2] = ""
+            hangman[3] = ""
+            hangman[4] = ""
+            hangman[5] = ""
+            hangman[6] = ""
+            hangman[7] = "_____"
+        if self.lives_used >= 1:
+            hangman[0] = ""
+            hangman[1] = " |"
+            hangman[2] = " |"
+            hangman[3] = " |"
+            hangman[4] = " |"
+            hangman[5] = " |"
+            hangman[6] = " |"
+            hangman[7] = "_|___"
+        if self.lives_used >= 2:
+            hangman[0] = "  _______"
+        if self.lives_used >= 3:
+            hangman[1] = " |/      |"
+            hangman[2] = " |      (_)"
+        if self.lives_used >= 4:
+            hangman[3] = " |       |"
+            hangman[4] = " |       |"
+        if self.lives_used >= 5:
+            hangman[3] = " |      \\|"
+        if self.lives_used >= 6:
+            hangman[3] = " |      \\|/"
+        if self.lives_used >= 7:
+            hangman[5] = " |      /"
+        if self.lives_used >= 8:
+            hangman[5] = " |      / \\"
+
+        print("\n".join(hangman))
+        print(f"{self.lives_used}/{MAX_LIVES}")
 
     def get_guess(self):
         guess = input("What's your guess? ")

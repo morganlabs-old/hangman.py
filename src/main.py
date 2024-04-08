@@ -12,6 +12,47 @@ class Game:
         self.word = list("somethsings")
         self.correct_guesses = [""] * len(self.word)
 
+    def start(self):
+        print("Welcome to Hangman!")
+        print("The idea is simple. I'll think of a word, and you can guess letters or words to figure it out!")
+        print("Be careful, however! For each wrong answer, this little stickman will come closer and closer to death! :(")
+
+        self.game_loop()
+
+    def game_loop(self):
+        self.print_ui()
+        self.get_guess()
+
+        is_game_over = self.is_game_over()
+        if is_game_over:
+            self.game_over()
+        else:
+            self.game_loop()
+
+    def print_ui(self):
+        # Word + correct letters
+        # Hang man + remaining lives
+        # Incorrect letters
+
+        self.print_correct_guesses()
+        print(f"{self.lives_used}/{MAX_LIVES}")
+        self.print_incorrect_guesses()
+
+    def print_correct_guesses(self):
+        correct_guesses_str = map(
+            lambda x: x if x != "" else "_", self.correct_guesses
+        )
+        correct_guesses_str = "".join(correct_guesses_str)
+
+        print(correct_guesses_str)
+
+    def print_incorrect_guesses(self):
+        incorrect_guesses_str = filter(
+            lambda x: False if x in self.correct_guesses else True, self.letters_guessed)
+        incorrect_guesses_str = " ".join(incorrect_guesses_str)
+
+        print(incorrect_guesses_str)
+
     def get_guess(self):
         guess = input("What's your guess? ")
         if len(guess) != 1:
@@ -40,16 +81,17 @@ class Game:
 
     def use_life(self):
         self.lives_used += 1
-        if self.lives_used >= MAX_LIVES:
-            self.lives_used = MAX_LIVES
-            self.game_over()
+
+    def is_game_over(self):
+        return self.lives_used >= MAX_LIVES
 
     def game_over(self):
-        print("Placeholder")
+        print("Game over.")
 
 
-game = Game()
-print(game.word)
-print(game.correct_guesses)
-game.get_guess()
-print(game.correct_guesses)
+def main():
+    game = Game()
+    game.start()
+
+
+main()

@@ -128,7 +128,14 @@ class Game:
             self.use_life()
 
     def handle_word_guess(self, guess):
-        print("Placeholder")
+        word_str = "".join(self.word).lower()
+        guess = guess.lower()
+
+        if word_str == guess:
+            self.correct_guesses = self.word
+        else:
+            self.use_life()
+            self.use_life()
 
     def use_life(self):
         self.lives_used += 1
@@ -140,7 +147,9 @@ class Game:
         return "".join(self.correct_guesses) == "".join(self.word)
 
     def game_over(self):
-        print("Game over.")
+        word = "".join(self.word)
+        print("Too bad! Better luck next time.")
+        print(f"The word was {word}")
 
     def game_complete(self):
         word = "".join(self.word)

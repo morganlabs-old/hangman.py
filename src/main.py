@@ -20,20 +20,18 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
+        print()
         self.print_ui()
         self.get_guess()
 
         is_game_over = self.is_game_over()
-        if is_game_over:
-            self.game_over()
-        else:
+        if not is_game_over:
             self.game_loop()
+        else:
+            self.print_ui()
+            self.game_over()
 
     def print_ui(self):
-        # Word + correct letters
-        # Hang man + remaining lives
-        # Incorrect letters
-
         self.print_correct_guesses()
         print(f"{self.lives_used}/{MAX_LIVES}")
         self.print_incorrect_guesses()
@@ -48,7 +46,9 @@ class Game:
 
     def print_incorrect_guesses(self):
         incorrect_guesses_str = filter(
-            lambda x: False if x in self.correct_guesses else True, self.letters_guessed)
+            lambda x: False if x in self.correct_guesses else True,
+            self.letters_guessed
+        )
         incorrect_guesses_str = " ".join(incorrect_guesses_str)
 
         print(incorrect_guesses_str)
@@ -75,6 +75,9 @@ class Game:
         for i in range(len(self.word)):
             if (self.word[i] == guess):
                 self.correct_guesses[i] = guess
+
+        if guess not in self.correct_guesses:
+            self.use_life()
 
     def handle_word_guess(self, guess):
         print("Placeholder")

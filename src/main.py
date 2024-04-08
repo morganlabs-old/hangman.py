@@ -23,7 +23,6 @@ class Game:
         self.get_guess()
 
         is_game_over = self.is_game_over()
-
         if is_game_over:
             self.print_ui()
             self.game_over()
